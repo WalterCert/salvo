@@ -1,8 +1,10 @@
 package com.codeoftheweb.salvo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +19,7 @@ public class Player {
     private long id;
 
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
-    Set<GamePlayer> gamePlayers;
+    Set<GamePlayer> gamePlayers = new HashSet<>();
 
     private String userName;
     private String password;
@@ -29,10 +31,12 @@ public class Player {
         this.setPassword(pass);
     }
 
-    public void addGamePlayer(GamePlayer gamePlayer) {
+    public void addGamePlayers(GamePlayer gamePlayer) {
         gamePlayer.setPlayer(this);//A el arg gP le agrego el player.
         gamePlayers.add(gamePlayer);//Al SET de gPlayers le agrego el gp con el Player seteado.
     }
+
+    @JsonIgnore
     public List<Game> getGames() {
         return gamePlayers.stream().map(sub -> sub.getGame()).collect(toList());
     }

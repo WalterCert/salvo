@@ -1,5 +1,6 @@
 package com.codeoftheweb.salvo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.util.*;
 @Entity
 public class Ship {
 
+    //------------------------Inicio zonaVariables
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -15,42 +17,41 @@ public class Ship {
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "gamePlayer_id")
-    private GamePlayer gamePlayer;
+    private GamePlayer gamePlayer = new GamePlayer();
 
     @ElementCollection
     @Column(name="locations")
-    private List<String> locations;
+    private List<String> locations = new ArrayList<>();
 
     private String type;
+    //------------------------Fin zonaVariables
 
     public Ship(){}
 
     public Ship(String type, GamePlayer gamePlayer, List<String> locations){
         this.setType(type);
-        this.setGamePlayers(gamePlayer);
+        this.setGamePlayer(gamePlayer);
         this.setLocations(locations);
     }
 
     public long getId() {
         return id;
     }
-
     public void setId(long id) {
         this.id = id;
     }
 
+    @JsonIgnore
     public GamePlayer getGamePlayer() {
         return gamePlayer;
     }
-
-    public void setGamePlayers(GamePlayer gamePlayer) {
+    public void setGamePlayer(GamePlayer gamePlayer) {
         this.gamePlayer = gamePlayer;
     }
 
     public List<String> getLocations() {
         return locations;
     }
-
     public void setLocations(List<String> locations) {
         this.locations = locations;
     }
@@ -58,7 +59,6 @@ public class Ship {
     public String getType() {
         return type;
     }
-
     public void setType(String type) {
         this.type = type;
     }

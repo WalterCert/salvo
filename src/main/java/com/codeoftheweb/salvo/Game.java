@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public class Game {
     private long id;
 
     @OneToMany( mappedBy="game", fetch=FetchType.EAGER)
-    Set<GamePlayer> gamePlayers;
+    Set<GamePlayer> gamePlayers = new HashSet<>();
 
     private Date creationDate;
 
@@ -39,7 +40,6 @@ public class Game {
     public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }
-
     public List<Player> getPlayers() {
         return gamePlayers.stream().map(sub -> sub.getPlayer()).collect(toList());
     }
