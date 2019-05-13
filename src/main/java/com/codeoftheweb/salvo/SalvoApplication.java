@@ -21,7 +21,8 @@ public class SalvoApplication {
                                       GameRepository gRepo,
                                       GamePlayerRepository gpRepo,
                                       ShipRepository sRepo,
-                                      SalvoRepository svRepo) {
+                                      SalvoRepository svRepo,
+                                      ScoreRepository scRepo) {
         return (args) -> {
             // save a couple of player
 
@@ -144,6 +145,9 @@ public class SalvoApplication {
             svRepo.save(sv2);
             svRepo.save(sv3);
             svRepo.save(sv4);
+
+            Score sc1 = new Score (g1, p1, 1.0f, date);
+            scRepo.save(sc1);
 
         };
     }

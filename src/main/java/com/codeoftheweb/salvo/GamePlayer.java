@@ -17,11 +17,11 @@ public class GamePlayer {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="Player_id")
+    @JoinColumn(name="player")
     private Player player = new Player();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="Game_id")
+    @JoinColumn(name="game")
     private Game game = new Game();
 
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
