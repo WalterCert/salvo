@@ -19,8 +19,11 @@ public class SalvoController {
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 62aa259c30b0a1d7126113f7a668d2f6d146ebf6
     //Devuelve el Id de cada objeto Game
     @RequestMapping("/gamesId")
     public List<Long> getGameId(){
@@ -34,6 +37,7 @@ public class SalvoController {
     //Devuelve el los Objetos Game
     @RequestMapping("/games")
     public List<Object> getGames() {
+<<<<<<< HEAD
         return gamePlayerRepository
                 .findAll()
                 .stream()
@@ -47,13 +51,34 @@ public class SalvoController {
         return this.GameDTO(gamePlayer.get());
     }
 
+=======
+        return gamePlayerRepository.findAll().stream().map(game -> GameDTO(game)).collect(toList());
+    }
+
+    @RequestMapping("/game_view/{Id}")
+    private Map<String, Object> getGPID(@PathVariable Long Id){
+        Optional<GamePlayer> gamePlayer = gamePlayerRepository.findById(Id);
+        return this.GameDTO(gamePlayer.get());
+    }
+
+    private List<Map<String, Object>> getGamePlayerList(Set<GamePlayer> gamePlayers){
+        return gamePlayers
+                .stream()
+                .map(gamePlayer -> GamePlayerDTO(gamePlayer))
+                .collect(toList());
+    }
+
+>>>>>>> 62aa259c30b0a1d7126113f7a668d2f6d146ebf6
     private Map<String, Object> GameDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", gamePlayer.getGame().getId());
         dto.put("creationDate", gamePlayer.getGame().getCreationDate());
         dto.put("gamePlayers", getGamePlayerList(gamePlayer.getGame().getGamePlayers()));
         dto.put("ships", gamePlayer.getShips());
+<<<<<<< HEAD
         dto.put("salvoes", getSalvoesList(gamePlayer.getGame()));
+=======
+>>>>>>> 62aa259c30b0a1d7126113f7a668d2f6d146ebf6
 
         return dto;
     }
@@ -97,6 +122,7 @@ public class SalvoController {
         return dto;
     }
 
+<<<<<<< HEAD
     private Map<String, Object> SalvoDTO(Salvo salvo){
         Map<String, Object> dto = new HashMap<>();
         dto.put("id", salvo.getId());
@@ -106,5 +132,7 @@ public class SalvoController {
         return dto;
     }
 
+=======
+>>>>>>> 62aa259c30b0a1d7126113f7a668d2f6d146ebf6
 
 }
