@@ -20,12 +20,8 @@ public class SalvoApplication {
     public CommandLineRunner initData(PlayerRepository pRepo,
                                       GameRepository gRepo,
                                       GamePlayerRepository gpRepo,
-<<<<<<< HEAD
                                       ShipRepository sRepo,
                                       SalvoRepository svRepo) {
-=======
-                                      ShipRepository sRepo) {
->>>>>>> 62aa259c30b0a1d7126113f7a668d2f6d146ebf6
         return (args) -> {
             // save a couple of player
 
@@ -56,11 +52,7 @@ public class SalvoApplication {
             p2.addGamePlayers(gp1);
 
             List<String> loc1 = new ArrayList<>();
-<<<<<<< HEAD
             loc1.add("H5");
-=======
-            loc1.add("H4");
->>>>>>> 62aa259c30b0a1d7126113f7a668d2f6d146ebf6
             loc1.add("H6");
             loc1.add("H7");
             loc1.add("H8");
@@ -79,29 +71,20 @@ public class SalvoApplication {
             loc4.add("A2");
             loc4.add("A3");
             List<String> loc5 = new ArrayList<>();
-<<<<<<< HEAD
             loc5.add("B3");
             loc5.add("B4");
-=======
-            loc2.add("B3");
-            loc2.add("B4");
->>>>>>> 62aa259c30b0a1d7126113f7a668d2f6d146ebf6
 
             Ship s1 = new Ship("Carrier",gp1,loc1);
             Ship s2 = new Ship("Battleship",gp1,loc2);
             Ship s3 = new Ship("Submarine",gp1,loc3);
             Ship s4 = new Ship("Destroyer",gp1,loc4);
             Ship s5 = new Ship("Patrol Boat",gp1,loc5);
-<<<<<<< HEAD
 
-=======
->>>>>>> 62aa259c30b0a1d7126113f7a668d2f6d146ebf6
             sRepo.save(s1);
             sRepo.save(s2);
             sRepo.save(s3);
             sRepo.save(s4);
             sRepo.save(s5);
-<<<<<<< HEAD
 
             List<String> loc6 = new ArrayList<>();
             loc6.add("A4");
@@ -161,8 +144,6 @@ public class SalvoApplication {
             svRepo.save(sv2);
             svRepo.save(sv3);
             svRepo.save(sv4);
-=======
->>>>>>> 62aa259c30b0a1d7126113f7a668d2f6d146ebf6
 
         };
     }
