@@ -40,17 +40,21 @@ public class SalvoApplication {
             Game g1 = new Game(date);
             Game g2 = new Game(Date.from(date.toInstant().plusSeconds(3600)));
             Game g3 = new Game(Date.from(date.toInstant().plusSeconds(3600*2)));
+            Game g4 = new Game(date);
             gRepo.save(g1);
             gRepo.save(g2);
             gRepo.save(g3);
+            gRepo.save(g4);
 
             GamePlayer gp1 = new GamePlayer(date, g1, p1);
             GamePlayer gp2 = new GamePlayer(date, g1, p2);
-
+            GamePlayer gp3 = new GamePlayer(date, g3, p3);
             gpRepo.save(gp1);
             gpRepo.save(gp2);
+            gpRepo.save(gp3);
 
             p2.addGamePlayers(gp1);
+            p1.addGamePlayers(gp3);
 
             List<String> loc1 = new ArrayList<>();
             loc1.add("H5");
@@ -147,8 +151,23 @@ public class SalvoApplication {
             svRepo.save(sv4);
 
             Score sc1 = new Score (g1, p1, 1.0f, date);
+            Score sc2 = new Score (g2, p1, 0.5f, date);
+            Score sc3 = new Score (g4, p1, 1.0f, date);
             scRepo.save(sc1);
+            scRepo.save(sc2);
+            scRepo.save(sc3);
 
+            Score sc4 = new Score(g1, p2, 0.0f, date);
+            Score sc5 = new Score(g2, p2, 0.5f, date);
+            Score sc6 = new Score(g3, p2, 1.0f, date);
+            Score sc7 = new Score(g4, p2, 0.5f, date);
+            scRepo.save(sc4);
+            scRepo.save(sc5);
+            scRepo.save(sc6);
+            scRepo.save(sc7);
+
+            Score sc8 = new Score(g3, p3, 0.0f, date);
+            scRepo.save(sc8);
         };
     }
 }

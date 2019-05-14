@@ -3,9 +3,9 @@ $(function() {
 });
 
 function updateViewGames(data) {
-  var htmlList = data.games.map(function (games) {
+  var htmlList = data.map(function (games) {
       return  '<li class="list-group-item">'
-          + new Date(games.crationDate).toLocaleString() + ' '
+          + new Date(games.creationDate).toLocaleString() + ' '
           + games
               .gamePlayers
               .map(function(p) { return p.player.email})
@@ -17,7 +17,7 @@ function updateViewGames(data) {
 
 function updateViewLBoard(data) {
   var htmlList = data.map(function (score) {
-      return  '<tr><td>' + score.name + '</td>'
+      return  '<tr><td>' + score.score.name + '</td>'
               + '<td>' + score.score.total + '</td>'
               + '<td>' + score.score.won + '</td>'
               + '<td>' + score.score.lost + '</td>'

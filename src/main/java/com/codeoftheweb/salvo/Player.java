@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -34,15 +32,7 @@ public class Player {
         this.setPassword(pass);
     }
 
-    public void addGamePlayers(GamePlayer gamePlayer) {
-        gamePlayer.setPlayer(this);//A el arg gP le agrego el player.
-        gamePlayers.add(gamePlayer);//Al SET de gPlayers le agrego el gp con el Player seteado.
-    }
 
-    @JsonIgnore
-    public List<Game> getGames() {
-        return gamePlayers.stream().map(sub -> sub.getGame()).collect(toList());
-    }
 
     @Override
     public String toString() {
@@ -51,6 +41,11 @@ public class Player {
                 ", userName='" + this.getUserName() + '\'' +
                 //", password='" + this.getPassword() + '\'' +
                 '}';
+    }
+
+    @JsonIgnore
+    public List<Game> getGames() {
+        return gamePlayers.stream().map(sub -> sub.getGame()).collect(toList());
     }
 
     public String getPassword() {
@@ -80,6 +75,10 @@ public class Player {
     public void setGamePlayers(Set<GamePlayer> gamePlayers) {
         this.gamePlayers = gamePlayers;
     }
+    public void addGamePlayers(GamePlayer gamePlayer) {
+        gamePlayer.setPlayer(this);//A el arg gP le agrego el player.
+        gamePlayers.add(gamePlayer);//Al SET de gPlayers le agrego el gp con el Player seteado.
+    }
 
     public Set<Score> getScores() {
         return scores;
@@ -87,7 +86,43 @@ public class Player {
     public void setScores(Set<Score> score) {
         this.scores = score;
     }
-    public Score getScore(Game game){
-        return game.getScores().forEach(score -> game.);
+/*
+    public Map<String, Object> getScore(Player player){
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("Wins", player.getWins(this.scores));
+        dto.put("Tied" ,player.getTied(this.scores));
+        dto.put("Loses", player.getLoses(this.scores));
+        return dto;
+    }*/
+
+    public Score getScore (Game game){
+        return scores
+                .stream()
+                .filter(score -> score.getGame().getId() == game.getId())
+                .findAny()
+                .orElse(null);
+    }
+
+    public float getScore(){
+        return getWins(this.getScores())
+                + this.getTied(this.getScores())*(float)0.5
+                + this.getLoses(this.getScores())*0;
+
+    }
+
+    public float getWins(Set<Score> scores){
+        return scores.stream()
+                .filter(s -> s.getScore() == 1.0)
+                .count();
+    }
+    public float getTied(Set<Score> scores){
+        return scores.stream()
+                .filter(s -> s.getScore() == 0.5)
+                .count();
+    }
+    public float getLoses(Set<Score> scores){
+        return scores.stream()
+                .filter(s -> s.getScore() == 0.0)
+                .count();
     }
 }

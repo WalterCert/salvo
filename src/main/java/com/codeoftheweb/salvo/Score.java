@@ -67,4 +67,6 @@ public class Score {
     public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
     }
+
+
 }

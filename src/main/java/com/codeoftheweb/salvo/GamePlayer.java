@@ -83,4 +83,5 @@ public class GamePlayer {
     public void setDate(Date date) {
         this.date = date;
     }
+
 }
