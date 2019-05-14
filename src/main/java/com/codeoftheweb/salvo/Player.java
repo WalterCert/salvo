@@ -32,8 +32,6 @@ public class Player {
         this.setPassword(pass);
     }
 
-
-
     @Override
     public String toString() {
         return "Player{" +
@@ -104,7 +102,7 @@ public class Player {
     }
 
     public float getScore(){
-        return getWins(this.getScores())
+        return this.getWins(this.getScores())
                 + this.getTied(this.getScores())*(float)0.5
                 + this.getLoses(this.getScores())*0;
 

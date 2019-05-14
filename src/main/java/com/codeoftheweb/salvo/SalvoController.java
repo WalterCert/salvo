@@ -22,6 +22,26 @@ public class SalvoController {
     @Autowired
     private PlayerRepository playerRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @RequestMapping(path = "/persons", method = RequestMethod.POST)
+    public ResponseEntity<Object> register(
+            @RequestParam first, @RequestParam last,
+            @RequestParam String email, @RequestParam String password) {
+
+        if (firstName.isEmpty() || last.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+        }
+
+        if (personRepository.findOneByEmail(email) !=  null) {
+            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+        }
+
+        playerRepository.save(new Person(first, last, email, passwordEncoder.encode(password)));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     //Devuelve el Id de cada objeto Game
     @RequestMapping("/gamesId")
     public List<Long> getGameId(){
