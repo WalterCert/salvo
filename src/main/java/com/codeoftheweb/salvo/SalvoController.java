@@ -22,7 +22,7 @@ public class SalvoController {
     @Autowired
     private PlayerRepository playerRepository;
 
-    @Autowired
+    /*@Autowired
     private PasswordEncoder passwordEncoder;
 
     @RequestMapping(path = "/persons", method = RequestMethod.POST)
@@ -40,7 +40,7 @@ public class SalvoController {
 
         playerRepository.save(new Person(first, last, email, passwordEncoder.encode(password)));
         return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+    }*/
 
     //Devuelve el Id de cada objeto Game
     @RequestMapping("/gamesId")
