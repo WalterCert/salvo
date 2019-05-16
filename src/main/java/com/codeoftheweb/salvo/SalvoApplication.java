@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.web.embedded.undertow.UndertowServletWebServer;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -222,39 +223,35 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
 }
 
+
+
 @EnableWebSecurity
 @Configuration
 class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
     protected void configure(HttpSecurity http) throws Exception {
-        /*
-        //pop-up donde coloco user pass y permite el acceso a toda url.
-        *
-        *http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic();
-        *
-        */
-
         http.authorizeRequests()
-                .antMatchers("/rest/**").permitAll()
-                .antMatchers("/api/**").hasAuthority("USER");
-        http.formLogin().loginPage("/api/login")
+                .antMatchers("/api/games").hasAuthority("USER")
+                .antMatchers("/api/players").permitAll();
+        http.formLogin()
                 .usernameParameter("userName")
-                .passwordParameter("password");
+                .passwordParameter("password")
+                .loginPage("/api/login");
         http.logout().logoutUrl("/api/logout");
 
         // turn off checking for CSRF tokens
         http.csrf().disable();
 
-        // if user is not authenticated, just send an authentication failure response
+        // si el usuario no esta autenticado, se envía una respuesta de "Falla de autenticación"
         http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
 
-        // if login is successful, just clear the flags asking for authentication
+        // si el logueo es satisfacctorio, se limpian las banderas (flags) que preguntan por autenticación
         http.formLogin().successHandler((req, res, auth) -> clearAuthenticationAttributes(req));
 
-        // if login fails, just send an authentication failure response
+        // si el logueo falla, se envia un fallo de autenticación
         http.formLogin().failureHandler((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
 
-        // if logout is successful, just send a success response
+        // si el logueo es satisfacctorio, se envía una respuesta de logueo satisfactorio.
         http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
     }
 
@@ -270,3 +267,14 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
+/*
+    //Comando de consola para actiar jQuery
+    // ... give time for script to load, then type (or see below for non wait option)
+
+    var jq = document.createElement('script');
+    jq.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js";
+    document.getElementsByTagName('head')[0].appendChild(jq);
+    jQuery.noConflict();
+
+    $.post("/api/login", { userName: "j.bauer@ctu.gov", password: "24" }).done(function() { console.log("logged in!"); })
+*/

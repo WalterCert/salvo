@@ -1,9 +1,13 @@
 package com.codeoftheweb.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -22,25 +26,8 @@ public class SalvoController {
     @Autowired
     private PlayerRepository playerRepository;
 
-    /*@Autowired
+    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @RequestMapping(path = "/persons", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(
-            @RequestParam first, @RequestParam last,
-            @RequestParam String email, @RequestParam String password) {
-
-        if (firstName.isEmpty() || last.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
-        }
-
-        if (personRepository.findOneByEmail(email) !=  null) {
-            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
-        }
-
-        playerRepository.save(new Person(first, last, email, passwordEncoder.encode(password)));
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }*/
 
     //Devuelve el Id de cada objeto Game
     @RequestMapping("/gamesId")
@@ -52,8 +39,43 @@ public class SalvoController {
                 .collect(toList());
     }
 
-    //Devuelve el los Objetos Game
     @RequestMapping("/games")
+    public Map<String, Object> makeLoggedPlayer (Authentication authentication){
+        Map<String, Object> dto = new HashMap<>();
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        Player authenticatedPlayer = getAuthentication(authentication);
+        if (authenticatedPlayer != null) {
+            dto.put("player", makePlayerDTO(authenticatedPlayer));
+            dto.put("games" , this.getGames());
+        }else{
+            dto.put("player", "Guest");
+        }
+        return dto;
+    }
+
+    private Player getAuthentication(Authentication authentication){
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return null;
+        }else{
+            return(playerRepository.findByUserName(authentication.getName()));
+        }
+    }
+
+    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    public ResponseEntity<Object> register(@RequestParam String userName, @RequestParam String password) {
+
+        if (userName.isEmpty() || password.isEmpty()) {
+            return new ResponseEntity<>("Falta informacion", HttpStatus.FORBIDDEN);
+        }
+
+        if (playerRepository.findByUserName(userName) !=  null) {
+            return new ResponseEntity<>("Nombre en uso", HttpStatus.FORBIDDEN);
+        }
+
+        playerRepository.save(new Player(userName, passwordEncoder.encode(password)));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     public List<Object> getGames() {
         return gamePlayerRepository
                 .findAll()
@@ -85,16 +107,6 @@ public class SalvoController {
         return dto;
     }
 
-    private Map<String, Object> makeScoreDTO(Player player){
-        Map<String, Object> dto = new HashMap<>();
-        dto.put("name", player.getUserName());
-        dto.put("total", player.getScore());
-        dto.put("won", player.getWins(player.getScores()));
-        dto.put("tied",player.getTied(player.getScores()));
-        dto.put("lost",player.getLoses(player.getScores()));
-        return dto;
-    }
-
     private Map<String, Object> GameDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", gamePlayer.getGame().getId());
@@ -114,6 +126,14 @@ public class SalvoController {
                 .collect(toList());
     }
 
+    private Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("id", gamePlayer.getId());
+        dto.put("created", gamePlayer.getDate());
+        dto.put("player", makePlayerDTO(gamePlayer.getPlayer()));
+        return dto;
+    }
+
     private List<Map<String, Object>> getSalvoesList(Game game){
         List<Map<String,Object>> myList = new ArrayList<>();
         game
@@ -130,20 +150,23 @@ public class SalvoController {
                 .collect(toList());
     }
 
-    private Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
-        Map<String, Object> dto = new HashMap<>();
-        dto.put("id", gamePlayer.getId());
-        dto.put("created", gamePlayer.getDate());
-        dto.put("player", makePlayerDTO(gamePlayer.getPlayer()));
-        return dto;
-    }
-
     private Map<String, Object> makeSalvoDTO(Salvo salvo){
         Map<String, Object> dto = new HashMap<>();
         dto.put("id", salvo.getId());
         dto.put("turn", salvo.getTurn());
         dto.put("player", salvo.getGamePlayer().getId());
         dto.put("locations", salvo.getSalvoLocations());
+        return dto;
+    }
+
+    private Map<String, Object> makeScoreDTO(Player player){
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("name", player.getUserName());
+        dto.put("total", player.getScore());
+        dto.put("won", player.getWins(player.getScores()));
+        dto.put("lost",player.getLoses(player.getScores()));
+        dto.put("tied",player.getTied(player.getScores()));
+
         return dto;
     }
 

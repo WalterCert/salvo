@@ -11,7 +11,7 @@ $(function() {
 function updateViewGames(data) {
   var userTxt = data.player;
   var htmlList = data.games.map(function (games) {
-      return  '<li class="list-group-item">' + new Date(games.crationDate).toLocaleString() + ' ' + games.gamePlayers.map(function(p) { return p.player.email}).join(', ')  +'</li>';
+      return  '<li class="list-group-item">' + new Date(games.creationDate).toLocaleString() + ' ' + games.gamePlayers.map(function(p) { return p.player.email}).join(', ')  +'</li>';
   }).join('');
   $("#game-list").html(htmlList);
   if(userTxt!="Guest"){
