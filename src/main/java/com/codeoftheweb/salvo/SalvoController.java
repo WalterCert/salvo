@@ -39,55 +39,25 @@ public class SalvoController {
                 .collect(toList());
     }
 
-    @RequestMapping("/games")
-    public Map<String, Object> makeLoggedPlayer (Authentication authentication){
-        Map<String, Object> dto = new HashMap<>();
-        authentication = SecurityContextHolder.getContext().getAuthentication();
-        Player authenticatedPlayer = getAuthentication(authentication);
-        if (authenticatedPlayer != null) {
-            dto.put("player", makePlayerDTO(authenticatedPlayer));
-            dto.put("games" , this.getGames());
-        }else{
-            dto.put("player", "Guest");
-        }
-        return dto;
-    }
-
-    private Player getAuthentication(Authentication authentication){
-        if(authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            return null;
-        }else{
-            return(playerRepository.findByUserName(authentication.getName()));
-        }
-    }
-
     @RequestMapping(path = "/players", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(@RequestParam String userName, @RequestParam String password) {
+    public ResponseEntity<Object> register(@RequestParam String username, @RequestParam String password) {
 
-        if (userName.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty()) {
             return new ResponseEntity<>("Falta informacion", HttpStatus.FORBIDDEN);
         }
 
-        if (playerRepository.findByUserName(userName) !=  null) {
+        if (playerRepository.findByUsername(username) !=  null) {
             return new ResponseEntity<>("Nombre en uso", HttpStatus.FORBIDDEN);
         }
 
-        playerRepository.save(new Player(userName, passwordEncoder.encode(password)));
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    public List<Object> getGames() {
-        return gamePlayerRepository
-                .findAll()
-                .stream()
-                .map(game -> GameDTO(game))
-                .collect(toList());
+        playerRepository.save(new Player(username, passwordEncoder.encode(password)));
+        return new ResponseEntity<>("Usuario creado exitosamente", HttpStatus.CREATED);
     }
 
     @RequestMapping("/game_view/{Id}")
     private Map<String, Object> getGPID(@PathVariable Long Id){
         Optional<GamePlayer> gamePlayer = gamePlayerRepository.findById(Id);
-        return this.GameDTO(gamePlayer.get());
+        return this.GameDTO(gamePlayer.get().getGame());
     }
 
     @RequestMapping("/leaderBoard")
@@ -95,44 +65,96 @@ public class SalvoController {
         return playerRepository
                 .findAll()
                 .stream()
-                .map(player -> makePlayerDTO(player))
+                .map(this::makePlayerDTO)
                 .collect(toList());
     }
 
-    private Map<String, Object> makePlayerDTO(Player player) {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", player.getId());
-        dto.put("email", player.getUserName());
-        dto.put("score", makeScoreDTO(player));
+    @RequestMapping("/games")
+    public Map<String, Object> makeLoggedPlayer (Authentication authentication){
+        Map<String, Object> dto = new HashMap<>();
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        Player authenticatedPlayer = getAuthentication(authentication);
+        if (authenticatedPlayer == null)
+            dto.put("player", "Guest");
+        else
+            dto.put("player", makePlayerDTO(authenticatedPlayer));
+        dto.put("games" , this.getGames());
+
         return dto;
     }
+    private Player getAuthentication(Authentication authentication){
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return null;
+        }else{
+            return(playerRepository.findByUsername(authentication.getName()));
+        }
+    }
 
-    private Map<String, Object> GameDTO(GamePlayer gamePlayer) {
+    public List<Object> getGames() {
+        return gameRepository
+                .findAll()
+                .stream()
+                .map(this::GameDTO)
+                .collect(toList());
+    }
+
+    private Map<String, Object> GameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", gamePlayer.getGame().getId());
-        dto.put("creationDate", gamePlayer.getGame().getCreationDate());
-        dto.put("gamePlayers", makeGamePlayerList(gamePlayer.getGame().getGamePlayers()));
-        dto.put("ships", gamePlayer.getShips());
-        dto.put("salvoes", getSalvoesList(gamePlayer.getGame()));
-        //dto.put("scores", gamePlayer.getPlayer().getScores());
+        dto.put("id", game.getId());
+        dto.put("creationDate", game.getCreationDate());
+        dto.put("scores", getScoreList(game.getScores()));
+        dto.put("gamePlayers", makeGamePlayerList(game.getGamePlayers()));
 
+        //dto.put("salvoes", getSalvoesList(game));
         return dto;
     }
 
     private List<Map<String, Object>> makeGamePlayerList(Set<GamePlayer> gamePlayers){
         return gamePlayers
                 .stream()
-                .map(gamePlayer -> makeGamePlayerDTO(gamePlayer))
+                .map(this::makeGamePlayerDTO)
                 .collect(toList());
     }
-
     private Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new HashMap<>();
         dto.put("id", gamePlayer.getId());
-        dto.put("created", gamePlayer.getDate());
+        //dto.put("created", gamePlayer.getDate());
         dto.put("player", makePlayerDTO(gamePlayer.getPlayer()));
         return dto;
     }
+
+    private Map<String, Object> makePlayerDTO(Player player) {
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id", player.getId());
+        dto.put("email", player.getUsername());
+        //dto.put("scores", makeScoreDTO(player));
+        return dto;
+    }
+
+    private List<Map<String,Object>> getScoreList(Set<Score> scores){
+        return scores
+                .stream()
+                .map(this::scoreDTO)
+                .collect(toList());
+    }
+    private Map<String,Object> scoreDTO (Score score){
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("playerID", score.getPlayer().getId());
+        dto.put("score", score.getScore());
+        dto.put("email",score.getPlayer().getUsername());
+        //dto.put("finishDate", score.getFinishDate());
+        return dto;
+    }
+    private Map<String, Object> makeScoreDTO(Player player){
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("name", player.getUsername());
+        dto.put("total", player.getScoreTotal());
+        dto.put("won", player.getWins(player.getScores()));
+        dto.put("lost",player.getLoses(player.getScores()));
+        dto.put("tied",player.getTied(player.getScores()));
+
+        return dto;
+    }//Muestra dto de name, total, won, lost, tied. Solamente.
 
     private List<Map<String, Object>> getSalvoesList(Game game){
         List<Map<String,Object>> myList = new ArrayList<>();
@@ -142,14 +164,12 @@ public class SalvoController {
         .addAll(makeSalvoList(gamePlayer.getSalvoes())));
         return myList;
     }
-
     private List<Map<String, Object>> makeSalvoList(Set<Salvo> salvoes){
         return salvoes
                 .stream()
-                .map(salvo -> makeSalvoDTO(salvo))
+                .map(this::makeSalvoDTO)
                 .collect(toList());
     }
-
     private Map<String, Object> makeSalvoDTO(Salvo salvo){
         Map<String, Object> dto = new HashMap<>();
         dto.put("id", salvo.getId());
@@ -159,15 +179,9 @@ public class SalvoController {
         return dto;
     }
 
-    private Map<String, Object> makeScoreDTO(Player player){
-        Map<String, Object> dto = new HashMap<>();
-        dto.put("name", player.getUserName());
-        dto.put("total", player.getScore());
-        dto.put("won", player.getWins(player.getScores()));
-        dto.put("lost",player.getLoses(player.getScores()));
-        dto.put("tied",player.getTied(player.getScores()));
 
-        return dto;
-    }
+
+
+
 
 }

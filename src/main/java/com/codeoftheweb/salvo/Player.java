@@ -22,13 +22,13 @@ public class Player {
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
     private Set<Score> scores = new HashSet<>();
 
-    private String userName;
+    private String username;
     private String password;
 
     public Player() { }
 
     public Player(String name, String pass) {
-        this.setUserName(name);
+        this.setUsername(name);
         this.setPassword(pass);
     }
 
@@ -36,7 +36,7 @@ public class Player {
     public String toString() {
         return "Player{" +
                 "id=" + id +
-                ", userName='" + this.getUserName() + '\'' +
+                ", username='" + this.getUsername() + '\'' +
                 //", password='" + this.getPassword() + '\'' +
                 '}';
     }
@@ -53,11 +53,11 @@ public class Player {
         this.password = password;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public long getId() {
@@ -84,14 +84,6 @@ public class Player {
     public void setScores(Set<Score> score) {
         this.scores = score;
     }
-/*
-    public Map<String, Object> getScore(Player player){
-        Map<String, Object> dto = new HashMap<>();
-        dto.put("Wins", player.getWins(this.scores));
-        dto.put("Tied" ,player.getTied(this.scores));
-        dto.put("Loses", player.getLoses(this.scores));
-        return dto;
-    }*/
 
     public Score getScore (Game game){
         return scores
@@ -101,13 +93,11 @@ public class Player {
                 .orElse(null);
     }
 
-    public float getScore(){
+    public float getScoreTotal(){
         return this.getWins(this.getScores())
                 + this.getTied(this.getScores())*(float)0.5
                 + this.getLoses(this.getScores())*0;
-
     }
-
     public float getWins(Set<Score> scores){
         return scores.stream()
                 .filter(s -> s.getScore() == 1.0)

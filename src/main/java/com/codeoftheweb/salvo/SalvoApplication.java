@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.web.embedded.undertow.UndertowServletWebServer;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +13,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
@@ -65,7 +61,7 @@ public class SalvoApplication extends SpringBootServletInitializer {
             Game g1 = new Game(date);
             Game g2 = new Game(Date.from(date.toInstant().plusSeconds(3600)));
             Game g3 = new Game(Date.from(date.toInstant().plusSeconds(3600*2)));
-            Game g4 = new Game(date);
+            Game g4 = new Game(Date.from(date.toInstant().plusSeconds(3600*3)));
             gRepo.save(g1);
             gRepo.save(g2);
             gRepo.save(g3);
@@ -193,9 +189,6 @@ public class SalvoApplication extends SpringBootServletInitializer {
 
             Score sc8 = new Score(g3, p3, 0.0f, date);
             scRepo.save(sc8);
-
-
-            //pRepo.findByUserName("j.bauer@ctu.gov");
         };
     }
 }
@@ -208,35 +201,40 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userName ->
+        auth.userDetailsService(username ->
         {
-            Player player = playerRepository.findByUserName(userName);
+            Player player = playerRepository.findByUsername(username);
             if (player != null) {
-                return new User(player.getUserName(),
+                return new User(player.getUsername(),
                         player.getPassword(),
                         AuthorityUtils.createAuthorityList("USER"));
             } else {
-                throw new UsernameNotFoundException("Unknown user: " + userName);
+                throw new UsernameNotFoundException("Unknown user: " + username);
             }
         });
     }
-
 }
-
-
 
 @EnableWebSecurity
 @Configuration
 class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
     protected void configure(HttpSecurity http) throws Exception {
+
         http.authorizeRequests()
-                .antMatchers("/api/games").hasAuthority("USER")
-                .antMatchers("/api/players").permitAll();
+                .antMatchers( "/web/games_3.html").permitAll()
+                .antMatchers( "/web/**").permitAll()
+                .antMatchers( "/api/games.").permitAll()
+                .antMatchers( "/api/players").permitAll()
+                .antMatchers( "/api/game_view/*").hasAuthority("USER")
+                .antMatchers( "/rest/*").denyAll()
+                .anyRequest().permitAll();
+
         http.formLogin()
-                .usernameParameter("userName")
+                .usernameParameter("username")
                 .passwordParameter("password")
                 .loginPage("/api/login");
+
         http.logout().logoutUrl("/api/logout");
 
         // turn off checking for CSRF tokens
@@ -251,7 +249,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         // si el logueo falla, se envia un fallo de autenticación
         http.formLogin().failureHandler((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
 
-        // si el logueo es satisfacctorio, se envía una respuesta de logueo satisfactorio.
+        // si el logOUT es satisfacctorio, se envía una respuesta de logOUT satisfactorio.
         http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
     }
 
@@ -268,7 +266,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     }
 }
 /*
-    //Comando de consola para actiar jQuery
+    //Comando de consola para activar jQuery
     // ... give time for script to load, then type (or see below for non wait option)
 
     var jq = document.createElement('script');

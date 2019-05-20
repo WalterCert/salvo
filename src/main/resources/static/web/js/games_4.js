@@ -67,7 +67,7 @@ function loadData() {
 }
 
 function login(){
-  $.post("/api/login", { userName: $("#username").val(), password: $("#password").val()})
+  $.post("/api/login", { username: $("#username").val(), password: $("#password").val()})
     .done(function() {
       loadData(),
       showLogin(false);
