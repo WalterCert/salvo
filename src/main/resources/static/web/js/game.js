@@ -1,13 +1,13 @@
-// var player1 = "p1_";
-// var player2 = "p2_";
-var gamePlayerData = {};
-var errorMsg;
-var you = "";
-var viewer = "";
-var youID = "";
-var salvoJSON;
-var salvoPositions = [];
-var waitState = false;
+// let player1 = "p1_";
+// let player2 = "p2_";
+let gamePlayerData = {};
+let errorMsg;
+let you = "";
+let viewer = "";
+let youID = "";
+let salvoJSON;
+let salvoPositions = [];
+let waitState = false;
 
 refreshGameView(makeUrl());
 
@@ -34,22 +34,22 @@ $('#logoutButton').on('click', function (event) {
 
 
 function getParameterByName(name) {
-    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    let match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
     return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 }
 
 function makeUrl() {
-    var gamePlayerID =  getParameterByName("gp");
+    let gamePlayerID =  getParameterByName("gp");
     return '/api/game_view/' + gamePlayerID;
 }
 
 function makePostUrl() {
-    var gamePlayerID =  getParameterByName("gp");
+    let gamePlayerID =  getParameterByName("gp");
     return '/api/games/players/' + gamePlayerID + '/ships';
 }
 
 function makePostUrlSalvoes() {
-    var gamePlayerID =  getParameterByName("gp");
+    let gamePlayerID =  getParameterByName("gp");
     return '/api/games/players/' + gamePlayerID + '/salvoes';
 }
 
@@ -119,7 +119,7 @@ function refreshGameView(_url) {
 
                     }, 5000);
             }
-            if (gamePlayerData.gameState == "PLAY"){
+            if (gamePlayerData.gameState === "PLAY"){
                 showSelf(gamePlayerData);
                 makeGameRecordTable(gamePlayerData.hits.opponent, "gameRecordOppTable");
                 makeGameRecordTable(gamePlayerData.hits.self, "gameRecordSelfTable");
@@ -242,38 +242,38 @@ function showSelf (gamePlayerData) {
 }
 
 function createTable(player) {
-    var prova = 0;
-    var l = 0;
-    var gridLabel;
-    var gridId;
-    if (player == "p1_") {
+    let prova = 0;
+    let l = 0;
+    let gridLabel;
+    let gridId;
+    if (player === "p1_") {
         gridLabel = $('<p class="gridLabel">Self grid</p>');
         gridId = "#p1Grid";
     } else {
         gridLabel = $('<p class="gridLabel">Opponent grid</p>');
         gridId = "#p2Grid";
     }
-    var mytable = $('<table></table>').attr({
+    let mytable = $('<table></table>').attr({
         id: "basicTable",
         class: ""
     });
-    var rows = 10;
-    var cols = 10;
-    var tr = [];
+    let rows = 10;
+    let cols = 10;
+    let tr = [];
 
-    for (var i = 0; i <= rows; i++) {
-        var row = $('<tr></tr>').attr({
+    for (let i = 0; i <= rows; i++) {
+        let row = $('<tr></tr>').attr({
             class: ["class1"].join(' ')
         }).appendTo(mytable);
-        if (i == 0) {
-            for (var j = 0; j < cols + 1; j++) {
+        if (i === 0) {
+            for (let j = 0; j < cols + 1; j++) {
                 $('<th></th>').text(j).attr({
                     class: ["info"]
                 }).appendTo(row);
             }
         } else {
-            for (var j = 0; j < cols; j++) {
-                if (j == 0) {
+            for (let j = 0; j < cols; j++) {
+                if (j === 0) {
                     $('<th></th>').text(String.fromCharCode(65+(l++))).attr({
                         class: ["info"]
                     }).appendTo(row);
@@ -291,7 +291,7 @@ function createTable(player) {
 function postShipLocations (postUrl) {
     $.post({
         url: postUrl,
-        data: shipsJSON,
+        //data: shipsJSON,
         dataType: "text",
         contentType: "application/json"
     })
@@ -394,14 +394,14 @@ function makeSalvoJSON() {
 
 function makeGameRecordTable (hitsArray, gameRecordTableId) {
 
-    var tableId = "#" + gameRecordTableId + " tbody";
+    let tableId = "#" + gameRecordTableId + " tbody";
     $(tableId).empty();
     let shipsAfloat = 5;
     let playerTag;
-    if (gameRecordTableId == "gameRecordOppTable") {
+    if (gameRecordTableId === "gameRecordOppTable") {
         playerTag = "#opp";
     }
-    if (gameRecordTableId == "gameRecordSelfTable") {
+    if (gameRecordTableId === "gameRecordSelfTable") {
         playerTag = "#";
     }
 
@@ -466,12 +466,12 @@ function makeGameRecordTable (hitsArray, gameRecordTableId) {
 function addDamagesIcons (numberOfHits, hitOrMissed) {
     let damagesIcons = "";
     if (hitOrMissed === "missed") {
-        for (var i = 0; i < numberOfHits; i++) {
+        for (let i = 0; i < numberOfHits; i++) {
             damagesIcons += "<img class='hitblast' src='img/missed.png'>"
         }
     }
         if (hitOrMissed === "hit") {
-            for (var i = 0; i < numberOfHits; i++) {
+            for (let i = 0; i < numberOfHits; i++) {
                 damagesIcons += "<img class='hitblast' src='img/redhit.png'>"
             }
     }

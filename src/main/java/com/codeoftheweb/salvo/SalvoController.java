@@ -29,7 +29,6 @@ public class SalvoController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    //Devuelve el Id de cada objeto Game
     @RequestMapping("/gamesId")
     public List<Long> getGameId(){
         return gameRepository
@@ -39,34 +38,37 @@ public class SalvoController {
                 .collect(toList());
     }
 
-    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    @RequestMapping(path = "/players", method = RequestMethod.POST)//C5.T1: Metodo de registro
     public ResponseEntity<Object> register(@RequestParam String username, @RequestParam String password) {
 
         if (username.isEmpty() || password.isEmpty()) {
             return new ResponseEntity<>("Falta informacion", HttpStatus.FORBIDDEN);
-        }
-
+        }else
         if (playerRepository.findByUsername(username) !=  null) {
             return new ResponseEntity<>("Nombre en uso", HttpStatus.FORBIDDEN);
-        }
-
-        playerRepository.save(new Player(username, passwordEncoder.encode(password)));
+        }else
+            playerRepository.save(new Player(username, passwordEncoder.encode(password)));
         return new ResponseEntity<>("Usuario creado exitosamente", HttpStatus.CREATED);
     }
 
-    @RequestMapping("/game_view/{Id}")
-    private Map<String, Object> getGPID(@PathVariable Long Id){
-        Optional<GamePlayer> gamePlayer = gamePlayerRepository.findById(Id);
-        return this.GameDTO(gamePlayer.get().getGame());
-    }
-
-    @RequestMapping("/leaderBoard")
-    private List<Map<String, Object>> getLeaderBoard(){
-        return playerRepository
-                .findAll()
+    //GET api/games/{Id}/players
+    @RequestMapping(path = "/games/{Id}/players")
+    private List<Map<String, Object>> getPlayersGames(@PathVariable Long Id){
+        return (gameRepository
+                .findById(Id)).get().getPlayers()
                 .stream()
                 .map(this::makePlayerDTO)
                 .collect(toList());
+    }
+
+    //Target: logged in user added as new game player mm, if legal
+    @RequestMapping(path = "/games/{Id}/players", method = RequestMethod.POST)
+    private ResponseEntity<Object> newGameLoggedPlayer(@PathVariable Long Id, Authentication authentication){}
+
+    @RequestMapping("/game_view/{Id}")
+    private Map<String, Object> getGameView(@PathVariable Long Id){
+        Optional<GamePlayer> gamePlayer = gamePlayerRepository.findById(Id);
+        return this.makeGameDTO(gamePlayer.get().getGame());
     }
 
     @RequestMapping("/games")
@@ -90,22 +92,29 @@ public class SalvoController {
         }
     }
 
+    @RequestMapping("/leaderBoard")
+    private List<Map<String, Object>> getLeaderBoard(){
+        return playerRepository
+                .findAll()
+                .stream()
+                .map(this::makePlayerDTO)
+                .collect(toList());
+    }
+
     public List<Object> getGames() {
         return gameRepository
                 .findAll()
                 .stream()
-                .map(this::GameDTO)
+                .map(this::makeGameDTO)
                 .collect(toList());
     }
 
-    private Map<String, Object> GameDTO(Game game) {
+    private Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", game.getId());
         dto.put("creationDate", game.getCreationDate());
         dto.put("scores", getScoreList(game.getScores()));
         dto.put("gamePlayers", makeGamePlayerList(game.getGamePlayers()));
-
-        //dto.put("salvoes", getSalvoesList(game));
         return dto;
     }
 
@@ -117,27 +126,32 @@ public class SalvoController {
     }
     private Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new HashMap<>();
-        dto.put("id", gamePlayer.getId());
-        //dto.put("created", gamePlayer.getDate());
+        dto.put("gpid", gamePlayer.getId());
         dto.put("player", makePlayerDTO(gamePlayer.getPlayer()));
+
         return dto;
     }
 
+    /*private List<Map<String, Object>> makePlayerList(Set<Player> players){
+        return players
+                .stream()
+                .map(this::makePlayerDTO)
+                .collect(toList());
+    }*/
     private Map<String, Object> makePlayerDTO(Player player) {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", player.getId());
         dto.put("email", player.getUsername());
-        //dto.put("scores", makeScoreDTO(player));
         return dto;
     }
 
     private List<Map<String,Object>> getScoreList(Set<Score> scores){
         return scores
                 .stream()
-                .map(this::scoreDTO)
+                .map(this::makeScoreDTO)
                 .collect(toList());
     }
-    private Map<String,Object> scoreDTO (Score score){
+    private Map<String,Object> makeScoreDTO(Score score){
         Map<String, Object> dto = new HashMap<>();
         dto.put("playerID", score.getPlayer().getId());
         dto.put("score", score.getScore());
@@ -145,7 +159,7 @@ public class SalvoController {
         //dto.put("finishDate", score.getFinishDate());
         return dto;
     }
-    private Map<String, Object> makeScoreDTO(Player player){
+    /*private Map<String, Object> makeScoreDTO(Player player){
         Map<String, Object> dto = new HashMap<>();
         dto.put("name", player.getUsername());
         dto.put("total", player.getScoreTotal());
@@ -154,7 +168,7 @@ public class SalvoController {
         dto.put("tied",player.getTied(player.getScores()));
 
         return dto;
-    }//Muestra dto de name, total, won, lost, tied. Solamente.
+    }*///Muestra dto de name, total, won, lost, tied. Solamente.
 
     private List<Map<String, Object>> getSalvoesList(Game game){
         List<Map<String,Object>> myList = new ArrayList<>();
@@ -179,9 +193,15 @@ public class SalvoController {
         return dto;
     }
 
-
-
-
-
+    private List<Map<String, Object>> makeShipList(Set<Ship> ships){
+        return ships.stream().map(this::makeShipDTO).collect(toList());
+    }
+    private Map<String, Object> makeShipDTO (Ship ship){
+        Map <String,Object> dto = new HashMap<>();
+        dto.put("id", ship.getId());
+        dto.put("type",ship.getType());
+        dto.put("locations",ship.getLocations());
+        return dto;
+    }
 
 }

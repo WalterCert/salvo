@@ -45,7 +45,7 @@ public class SalvoApplication extends SpringBootServletInitializer {
                                       SalvoRepository svRepo,
                                       ScoreRepository scRepo) {
         return (args) -> {
-            // save a couple of player
+            // A partir de aca es MUCHO copy-paste para instanciar y guardar player y demás cosas.
 
             Player p1 = new Player("j.bauer@ctu.gov", passwordEncoder.encode("24"));
             Player p2 = new Player("c.obrian@ctu.gov",passwordEncoder.encode("42"));
@@ -69,13 +69,20 @@ public class SalvoApplication extends SpringBootServletInitializer {
 
             GamePlayer gp1 = new GamePlayer(date, g1, p1);
             GamePlayer gp2 = new GamePlayer(date, g1, p2);
-            GamePlayer gp3 = new GamePlayer(date, g3, p3);
             gpRepo.save(gp1);
             gpRepo.save(gp2);
+            GamePlayer gp3 = new GamePlayer(date, g2, p1);
+            GamePlayer gp4 = new GamePlayer(date, g2, p2);
             gpRepo.save(gp3);
-
-            p2.addGamePlayers(gp1);
-            p1.addGamePlayers(gp3);
+            gpRepo.save(gp4);
+            GamePlayer gp5 = new GamePlayer(date, g3, p3);
+            GamePlayer gp6 = new GamePlayer(date, g3, p4);
+            gpRepo.save(gp5);
+            gpRepo.save(gp6);
+            GamePlayer gp7 = new GamePlayer(date, g4, p2);
+            GamePlayer gp8 = new GamePlayer(date, g4, p1);
+            gpRepo.save(gp7);
+            gpRepo.save(gp8);
 
             List<String> loc1 = new ArrayList<>();
             loc1.add("H5");
@@ -100,7 +107,7 @@ public class SalvoApplication extends SpringBootServletInitializer {
             loc5.add("B3");
             loc5.add("B4");
 
-            Ship s1 = new Ship("Carrier",gp1,loc1);
+            Ship s1 = new Ship("Aircraft Carrier",gp1,loc1);
             Ship s2 = new Ship("Battleship",gp1,loc2);
             Ship s3 = new Ship("Submarine",gp1,loc3);
             Ship s4 = new Ship("Destroyer",gp1,loc4);
@@ -135,7 +142,7 @@ public class SalvoApplication extends SpringBootServletInitializer {
             loc10.add("J4");
             loc10.add("J5");
 
-            Ship s6 = new Ship("Carrier1",gp2,loc6);
+            Ship s6 = new Ship("Aircraft Carrier1",gp2,loc6);
             Ship s7 = new Ship("Battleship1",gp2,loc7);
             Ship s8 = new Ship("Submarine1",gp2,loc8);
             Ship s9 = new Ship("Destroyer1",gp2,loc9);
