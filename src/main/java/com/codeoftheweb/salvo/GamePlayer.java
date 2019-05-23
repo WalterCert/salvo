@@ -40,6 +40,9 @@ public class GamePlayer {
         this.setPlayer(p);
     }
 
+    public void setSalvoes(Set<Salvo> salvoes) {
+        this.salvoes = salvoes;
+    }
     public Set<Salvo> getSalvoes() {
         return salvoes;
     }
@@ -48,6 +51,9 @@ public class GamePlayer {
         salvoes.add(salvo);
     }
 
+    public void setShips(Set<Ship> ships) {
+        this.ships = ships;
+    }
     public Set<Ship> getShips() {
         return ships;
     }

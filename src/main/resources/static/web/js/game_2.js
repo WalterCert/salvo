@@ -5,15 +5,15 @@ $(function () {
 });
 
 function getParameterByName(name) {
-  var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+  let match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
   return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 }
 
 function loadData() {
   $.get('/api/game_view/' + getParameterByName('gp'))
     .done(function (data) {
-      var playerInfo;
-      if (data.gamePlayers[0].id == getParameterByName('gp'))
+      let playerInfo;
+      if (data.gamePlayers[0].id === getParameterByName('gp'))
         playerInfo = [data.gamePlayers[0].player, data.gamePlayers[1].player];
       else
         playerInfo = [data.gamePlayers[1].player, data.gamePlayers[0].player];
@@ -46,9 +46,9 @@ function loadData() {
 }
 
 function isHit(shipLocation,salvoes,playerId) {
-  var hit = false;
+  let hit = false;
   salvoes.forEach(function (salvo) {
-    if(salvo.player != playerId)
+    if(salvo.player !== playerId)
       salvo.locations.forEach(function (location) {
         if(shipLocation === location)
           hit = true;

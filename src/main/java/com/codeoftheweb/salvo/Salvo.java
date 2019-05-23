@@ -5,7 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Salvo {
@@ -21,13 +23,13 @@ public class Salvo {
 
     @ElementCollection
     @Column(name="locations")
-    private List<String> locations = new ArrayList<>();
+    private Set<String> locations = new HashSet<>();
 
     private Integer turn;
 
     public Salvo(){}
 
-    public Salvo(Integer turn, GamePlayer gamePlayer, List<String> locations){
+    public Salvo(Integer turn, GamePlayer gamePlayer, Set<String> locations){
         this.setTurn(turn);
         this.setGamePlayer(gamePlayer);
         this.setSalvoLocations(locations);
@@ -47,10 +49,10 @@ public class Salvo {
         this.id = id;
     }
 
-    public List<String> getSalvoLocations() {
+    public Set<String> getSalvoLocations() {
         return locations;
     }
-    public void setSalvoLocations(List<String> locations) {
+    public void setSalvoLocations(Set<String> locations) {
         this.locations = locations;
     }
 

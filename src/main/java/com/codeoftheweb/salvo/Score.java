@@ -14,11 +14,11 @@ public class Score {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "game")
+    @JoinColumn(name = "game_id")
     private Game game = new Game();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "player")
+    @JoinColumn(name = "player_id")
     private Player player = new Player();
 
     private float score;

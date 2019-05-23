@@ -19,10 +19,10 @@ public class Game {
     private long id;
 
     @OneToMany( mappedBy="game", fetch=FetchType.EAGER)
-    Set<GamePlayer> gamePlayers = new HashSet<>();
+    private Set<GamePlayer> gamePlayers = new HashSet<>();
 
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
-    Set<Score> scores = new HashSet<>();
+    private Set<Score> scores = new HashSet<>();
 
     private Date creationDate;
 

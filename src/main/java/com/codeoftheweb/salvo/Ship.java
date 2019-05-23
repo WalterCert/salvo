@@ -9,7 +9,6 @@ import java.util.*;
 @Entity
 public class Ship {
 
-    //------------------------Inicio zonaVariables
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -21,14 +20,13 @@ public class Ship {
 
     @ElementCollection
     @Column(name="locations")
-    private List<String> locations = new ArrayList<>();
+    private Set<String> locations = new HashSet<>();
 
     private String type;
-    //------------------------Fin zonaVariables
 
     public Ship(){}
 
-    public Ship(String type, GamePlayer gamePlayer, List<String> locations){
+    public Ship(String type, GamePlayer gamePlayer, Set<String> locations){
         this.setType(type);
         this.setGamePlayer(gamePlayer);
         this.setLocations(locations);
@@ -49,10 +47,10 @@ public class Ship {
         this.gamePlayer = gamePlayer;
     }
 
-    public List<String> getLocations() {
+    public Set<String> getLocations() {
         return locations;
     }
-    public void setLocations(List<String> locations) {
+    public void setLocations(Set<String> locations) {
         this.locations = locations;
     }
 

@@ -15,7 +15,7 @@ $(function() {
 $('#login-form').on('submit', function (event) {
     event.preventDefault();
 
-    if (submitButton == "login") {
+    if (submitButton === "login") {
         $.post("/api/login",
             { username: $("#username").val(),
                 password: $("#password").val() })
@@ -38,7 +38,7 @@ $('#login-form').on('submit', function (event) {
             .always(function() {
             });
 
-    } else if (submitButton == "signup") {
+    } else if (submitButton === "signup") {
         $.post("/api/players",
             { username: $("#username").val(),
                 password: $("#password").val() })

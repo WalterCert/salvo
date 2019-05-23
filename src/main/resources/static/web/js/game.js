@@ -9,6 +9,8 @@ let salvoJSON;
 let salvoPositions = [];
 let waitState = false;
 
+postShipLocations(makePostUrl());
+postSalvo(makePostUrlSalvoes());
 refreshGameView(makeUrl());
 
 $('#logoutButton').on('click', function (event) {
@@ -168,7 +170,7 @@ function showSelf (gamePlayerData) {
     youID = "";
 
     gamePlayerData.gamePlayers.forEach(function(gamePlayer) {
-        if (gamePlayer.id == getParameterByName("gp")) {
+        if (gamePlayer.id === getParameterByName("gp")) {
             you = gamePlayer.player.email;
             youID = gamePlayer.player.id;
         } else {
@@ -287,11 +289,12 @@ function createTable(player) {
     gridLabel.appendTo(gridId);
     mytable.appendTo(gridId);
 }
-
+//Aca se modificaron las lineas para testear
 function postShipLocations (postUrl) {
     $.post({
         url: postUrl,
-        //data: shipsJSON,
+        data: shipsJSON,
+        //data: JSON.stringify([{type: "destroyer", locations: ["A1", "A2", "A3"]},{type: "destroyer", locations: ["A1", "A2", "A3"]}]),
         dataType: "text",
         contentType: "application/json"
     })
@@ -314,11 +317,12 @@ function postShipLocations (postUrl) {
             $('#errorShips').show( "slow" ).delay(4000).hide( "slow" );
         })
 }
-
+//Aca tambien se modifico data: JSON
 function postSalvo (postUrl) {
     $.post({
         url: postUrl,
         data: salvoJSON,
+        //data: JSON.stringify({turn: 3, locations: ["A1", "A2", "A3"]}),
         dataType: "text",
         contentType: "application/json"
     })
