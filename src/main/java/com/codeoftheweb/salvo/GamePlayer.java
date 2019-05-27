@@ -4,9 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class GamePlayer {
@@ -17,11 +15,11 @@ public class GamePlayer {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="player")
+    @JoinColumn(name="player_id")
     private Player player = new Player();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="game")
+    @JoinColumn(name="game_id")
     private Game game = new Game();
 
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
@@ -43,9 +41,9 @@ public class GamePlayer {
     public void setSalvoes(Set<Salvo> salvoes) {
         this.salvoes = salvoes;
     }
-    public Set<Salvo> getSalvoes() {
-        return salvoes;
-    }
+   public Set<Salvo> getSalvoes(){
+        return this.salvoes;
+   }
     public void addSalvo(Salvo salvo) {
         salvo.setGamePlayer(this);
         salvoes.add(salvo);

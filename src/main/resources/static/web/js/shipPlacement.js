@@ -119,14 +119,14 @@ function renderPositions(positions) {
 		shipPosition.push(firstRowPosition + firstColPosition);
 		var nextRow;
 		var nextCol;
-		if (positions[i].width == 1) {
+		if (positions[i].width === 1) {
 			for (var j = 1; j < positions[i].height; j++) {
 				nextRow = String.fromCharCode(65 + (positions[i].y) + j);
 				nextCol = firstColPosition;
 				shipPosition.push(nextRow + nextCol);
 			}
 		}
-		if (positions[i].height == 1) {
+		if (positions[i].height === 1) {
 			for (var j = 1; j < positions[i].width; j++) {
 				nextRow = String.fromCharCode(65 + (positions[i].y));
 				nextCol = firstColPosition + j;

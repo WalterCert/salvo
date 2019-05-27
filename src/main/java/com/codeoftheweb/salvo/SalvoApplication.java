@@ -83,34 +83,34 @@ public class SalvoApplication extends SpringBootServletInitializer {
             gpRepo.save(gp7);
             gpRepo.save(gp8);
 
-            Set<String> loc1 = new HashSet<>();
+            Set <String> loc1 = new HashSet<>();
             loc1.add("H5");
             loc1.add("H6");
             loc1.add("H7");
             loc1.add("H8");
             loc1.add("H9");
-            Set<String> loc2 = new HashSet<>();
+            Set <String> loc2 = new HashSet<>();
             loc2.add("D1");
             loc2.add("D2");
             loc2.add("D3");
             loc2.add("D4");
-            Set<String> loc3 = new HashSet<>();
+            Set <String> loc3 = new HashSet<>();
             loc3.add("E2");
             loc3.add("E3");
             loc3.add("E4");
-            Set<String> loc4 = new HashSet<>();
+            Set <String> loc4 = new HashSet<>();
             loc4.add("A1");
             loc4.add("A2");
             loc4.add("A3");
-            Set<String> loc5 = new HashSet<>();
+            Set <String> loc5 = new HashSet<>();
             loc5.add("B3");
             loc5.add("B4");
 
-            Ship s1 = new Ship("Aircraft Carrier",gp1,loc1);
-            Ship s2 = new Ship("Battleship",gp1,loc2);
-            Ship s3 = new Ship("Submarine",gp1,loc3);
-            Ship s4 = new Ship("Destroyer",gp1,loc4);
-            Ship s5 = new Ship("Patrol Boat",gp1,loc5);
+            Ship s1 = new Ship("carrier",gp1,loc1);
+            Ship s2 = new Ship("battleship",gp1,loc2);
+            Ship s3 = new Ship("submarine",gp1,loc3);
+            Ship s4 = new Ship("destroyer",gp1,loc4);
+            Ship s5 = new Ship("patrol boat",gp1,loc5);
 
             sRepo.save(s1);
             sRepo.save(s2);
@@ -118,34 +118,34 @@ public class SalvoApplication extends SpringBootServletInitializer {
             sRepo.save(s4);
             sRepo.save(s5);
 
-            Set<String> loc6 = new HashSet<>();
+            Set <String> loc6 = new HashSet<>();
             loc6.add("A4");
             loc6.add("B4");
             loc6.add("C4");
             loc6.add("D4");
             loc6.add("E4");
-            Set<String> loc7 = new HashSet<>();
+            Set <String> loc7 = new HashSet<>();
             loc7.add("G1");
             loc7.add("G2");
             loc7.add("G3");
             loc7.add("G4");
-            Set<String> loc8 = new HashSet<>();
+            Set <String> loc8 = new HashSet<>();
             loc8.add("F5");
             loc8.add("F6");
             loc8.add("F7");
-            Set<String> loc9 = new HashSet<>();
+            Set <String> loc9 = new HashSet<>();
             loc9.add("H3");
             loc9.add("H2");
             loc9.add("H1");
-            Set<String> loc10 = new HashSet<>();
+            Set <String> loc10 = new HashSet<>();
             loc10.add("J4");
             loc10.add("I4");
 
-            Ship s6 = new Ship("Aircraft Carrier",gp2,loc6);
-            Ship s7 = new Ship("Battleship",gp2,loc7);
-            Ship s8 = new Ship("Submarine",gp2,loc8);
-            Ship s9 = new Ship("Destroyer",gp2,loc9);
-            Ship s10 = new Ship("Patrol Boat",gp2,loc10);
+            Ship s6 = new Ship("carrier",gp2,loc6);
+            Ship s7 = new Ship("battleship",gp2,loc7);
+            Ship s8 = new Ship("submarine",gp2,loc8);
+            Ship s9 = new Ship("destroyer",gp2,loc9);
+            Ship s10 = new Ship("patrol boat",gp2,loc10);
 
             sRepo.save(s6);
             sRepo.save(s7);
@@ -153,17 +153,17 @@ public class SalvoApplication extends SpringBootServletInitializer {
             sRepo.save(s9);
             sRepo.save(s10);
 
-            Set<String> salvoLoc1 = new HashSet<>();
+            Set <String> salvoLoc1 = new HashSet<>();
             salvoLoc1.add("A1");
             salvoLoc1.add("A4");
-            Set<String> salvoLoc2 = new HashSet<>();
+            Set <String> salvoLoc2 = new HashSet<>();
             salvoLoc2.add("B2");
             salvoLoc2.add("B4");
 
-            Set<String> salvoLoc3 = new HashSet<>();
+            Set <String> salvoLoc3 = new HashSet<>();
             salvoLoc3.add("C4");
             salvoLoc3.add("C8");
-            Set<String> salvoLoc4 = new HashSet<>();
+            Set <String> salvoLoc4 = new HashSet<>();
             salvoLoc4.add("D7");
             salvoLoc4.add("D1");
 

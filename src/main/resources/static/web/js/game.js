@@ -9,8 +9,8 @@ let salvoJSON;
 let salvoPositions = [];
 let waitState = false;
 
-postShipLocations(makePostUrl());
-postSalvo(makePostUrlSalvoes());
+//postShipLocations(makePostUrl());
+//postSalvo(makePostUrlSalvoes());
 refreshGameView(makeUrl());
 
 $('#logoutButton').on('click', function (event) {
