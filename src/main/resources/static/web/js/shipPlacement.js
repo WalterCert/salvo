@@ -1,13 +1,13 @@
-var carrier = "carrier";
-var battleship = "battleship";
-var submarine = "submarine";
-var destroyer = "destroyer";
-var patrolboat = "patrolboat";
-var grid;
-var notMoved = "";
+let carrier = "carrier";
+let battleship = "battleship";
+let submarine = "submarine";
+let destroyer = "destroyer";
+let patrolboat = "patrolboat";
+let grid;
+let notMoved = "";
 
-var positions;
-var shipsJSON;
+let positions;
+let shipsJSON;
 
 
 
@@ -20,7 +20,7 @@ $('#save-grid').click(function () {
 
 
 $(function () {
-	var options = {
+	let options = {
 		width: 10,
 		height: 10,
 		verticalMargin: 0,
@@ -66,7 +66,7 @@ $(function () {
 	grid.saveGrid = function () {
 		this.serializedData = _.map($('.grid-stack > .grid-stack-item:visible'), function (el) {
 			el = $(el);
-			var node = el.data('_gridstack_node');
+			let node = el.data('_gridstack_node');
 			return {
 				id: node.id,
 				x: node.x,
@@ -98,7 +98,7 @@ function rotate(ship) {
         $('.movingMsgBig').html(ship + "<br>rotated to<br> horizontal!");
 		console.log("x: " + currentX + " y: " + currentY + " w: " + currentHeight + " h: " + currentWidth);
 	} else {
-        var msg = "Illegal position. Collision or out of board!";
+        let msg = "Illegal position. Collision or out of board!";
 		displayOverlay(msg);
 		console.log("Illegal position. Collision or Out of board.");
 	}
@@ -107,35 +107,35 @@ function rotate(ship) {
 
 function renderPositions(positions) {
 
-	var shipPosition;
+	let shipPosition;
 	shipData = [];
 
-	for (var i = 0; i < positions.length; i++) {
+	for (let i = 0; i < positions.length; i++) {
 		shipObject = {};
 		
 		shipPosition = [];
 		firstRowPosition = String.fromCharCode(65 + (positions[i].y));
 		firstColPosition = positions[i].x + 1;
 		shipPosition.push(firstRowPosition + firstColPosition);
-		var nextRow;
-		var nextCol;
+		let nextRow;
+		let nextCol;
 		if (positions[i].width === 1) {
-			for (var j = 1; j < positions[i].height; j++) {
+			for (let j = 1; j < positions[i].height; j++) {
 				nextRow = String.fromCharCode(65 + (positions[i].y) + j);
 				nextCol = firstColPosition;
 				shipPosition.push(nextRow + nextCol);
 			}
 		}
 		if (positions[i].height === 1) {
-			for (var j = 1; j < positions[i].width; j++) {
+			for (let j = 1; j < positions[i].width; j++) {
 				nextRow = String.fromCharCode(65 + (positions[i].y));
 				nextCol = firstColPosition + j;
 				shipPosition.push(nextRow + nextCol);
 			}
 		}
 		shipObject = {
-			shipType : positions[i].id,
-			shipLocations : shipPosition
+			type : positions[i].id,
+			locations : shipPosition
 		}
 		shipData.push(shipObject);
 		
@@ -153,23 +153,23 @@ function shipPositionMsg(ship) {
     firstRowPosition = String.fromCharCode(65 + (ship.y));
     firstColPosition = ship.x + 1;
     shipPosition.push(firstRowPosition + firstColPosition);
-    var nextRow;
-    var nextCol;
+    let nextRow;
+    let nextCol;
     if (ship.width == 1) {
-        for (var j = 1; j < ship.height; j++) {
+        for (let j = 1; j < ship.height; j++) {
             nextRow = String.fromCharCode(65 + (ship.y) + j);
             nextCol = firstColPosition;
             shipPosition.push(nextRow + nextCol);
         }
     }
     if (ship.height == 1) {
-        for (var j = 1; j < ship.width; j++) {
+        for (let j = 1; j < ship.width; j++) {
             nextRow = String.fromCharCode(65 + (ship.y));
             nextCol = firstColPosition + j;
             shipPosition.push(nextRow + nextCol);
         }
     }
-    for (var i = 0; i < shipPosition.length; i++){
+    for (let i = 0; i < shipPosition.length; i++){
         shipPositionMsgRendered += shipPosition[i] + " ";
     }
 
@@ -178,7 +178,7 @@ function shipPositionMsg(ship) {
 
 $('#grid1').on('change', function(event, items) {
     items.forEach(function(ship) {
-        var shipLocation = shipPositionMsg(ship);
+        let shipLocation = shipPositionMsg(ship);
         $('#' + ship.id + 'Position').text(shipLocation).removeClass('movingShip');
 
    });

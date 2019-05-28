@@ -67,7 +67,11 @@ function refreshGameView(_url) {
 
 
 
-            $('#gameStateBlock').html('<span class="gameStateLabel">TURN: </span><span class="gameStateLabelBig">' + getTurn(gamePlayerData) + '</span><span class="gameStateLabel"> ACTION REQUIRED: </span><span class="gameStateLabelBig">' + gamePlayerData.gameState + '</span>');
+            $('#gameStateBlock')
+                .html('<span class="gameStateLabel">TURN: </span><span class="gameStateLabelBig">'
+                    + getTurn(gamePlayerData)
+                    + '</span><span class="gameStateLabel"> ACTION REQUIRED: </span><span class="gameStateLabelBig">'
+                    + gamePlayerData.gameState + '</span>');
 
             console.log("waitState: " + waitState);
 
@@ -184,7 +188,7 @@ function showSelf (gamePlayerData) {
         $('#OpponentPlayerName').addClass('waitingPlayer');
     }
 
-    let DateCreated = new Date(gamePlayerData.created);
+    let DateCreated = new Date(gamePlayerData.creationDate);
     DateCreated = DateCreated.getMonth() + 1 + "/" + DateCreated.getDate() + " " + DateCreated.getHours() + ":" + DateCreated.getMinutes();
     $('#gamePlayerDetails').html('<span class="labelGame">Game ID: </span><span class="labelGameBig">' + gamePlayerData.id + '</span><span class="labelGame"> Created: </span><span class="labelGameBig">' + DateCreated + '</span>');
     $('#currentPlayerName').text(you);
@@ -294,7 +298,6 @@ function postShipLocations (postUrl) {
     $.post({
         url: postUrl,
         data: shipsJSON,
-        //data: JSON.stringify([{type: "destroyer", locations: ["A1", "A2", "A3"]},{type: "destroyer", locations: ["A1", "A2", "A3"]}]),
         dataType: "text",
         contentType: "application/json"
     })
@@ -322,7 +325,6 @@ function postSalvo (postUrl) {
     $.post({
         url: postUrl,
         data: salvoJSON,
-        //data: JSON.stringify({turn: 3, locations: ["A1", "A2", "A3"]}),
         dataType: "text",
         contentType: "application/json"
     })
@@ -389,7 +391,7 @@ function makeSalvoJSON() {
         salvoPositions.push(salvo5cellID);
     }
     salvoObject = {
-        salvoLocations : salvoPositions
+        locations : salvoPositions
     }
 
     salvoJSON = JSON.stringify(salvoObject);
