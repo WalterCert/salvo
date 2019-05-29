@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -22,13 +24,13 @@ public class Salvo {
 
     @ElementCollection
     @Column(name="locations")
-    private Set<String> locations = new HashSet<>();
+    private List<String> locations = new ArrayList<>();
 
     private Integer turn;
 
     public Salvo(){}
 
-    public Salvo(Integer turn, GamePlayer gamePlayer, Set<String> locations){
+    public Salvo(Integer turn, GamePlayer gamePlayer, List<String> locations){
         this.setTurn(turn);
         this.setGamePlayer(gamePlayer);
         this.setSalvoLocations(locations);
@@ -48,10 +50,10 @@ public class Salvo {
         this.id = id;
     }
 
-    public Set<String> getSalvoLocations() {
+    public List<String> getSalvoLocations() {
         return locations;
     }
-    public void setSalvoLocations(Set<String> locations) {
+    public void setSalvoLocations(List<String> locations) {
         this.locations = locations;
     }
 

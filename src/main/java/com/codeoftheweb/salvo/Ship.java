@@ -20,13 +20,13 @@ public class Ship {
 
     @ElementCollection
     @Column(name="locations")
-    private Set<String> locations = new HashSet<>();
+    private List<String> locations = new ArrayList<>();
 
     private String type;
 
     public Ship(){}
 
-    public Ship(String type, GamePlayer gamePlayer, Set<String> locations){
+    public Ship(String type, GamePlayer gamePlayer, List<String> locations){
         this.setType(type);
         this.setGamePlayer(gamePlayer);
         this.setLocations(locations);
@@ -47,10 +47,10 @@ public class Ship {
         this.gamePlayer = gamePlayer;
     }
 
-    public Set<String> getLocations() {
+    public List<String> getLocations() {
         return locations;
     }
-    public void setLocations(Set<String> locations) {
+    public void setLocations(List<String> locations) {
         this.locations = locations;
     }
 
