@@ -23,7 +23,7 @@ public class GamePlayer {
     private Game game = new Game();
 
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
-    private List<Ship> ships = new ArrayList<>();
+    private Set<Ship> ships = new HashSet<>();
 
     @OneToMany(mappedBy="gamePlayer", fetch = FetchType.EAGER)
     private Set<Salvo> salvoes = new HashSet<>();
@@ -49,10 +49,10 @@ public class GamePlayer {
         salvoes.add(salvo);
     }
 
-    public void setShips(List<Ship> ships) {
+    public void setShips(Set<Ship> ships) {
         this.ships = ships;
     }
-    public List<Ship> getShips() {
+    public Set<Ship> getShips() {
         return ships;
     }
     public void addShip(Ship ship){

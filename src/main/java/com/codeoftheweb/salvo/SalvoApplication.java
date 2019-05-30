@@ -58,18 +58,20 @@ public class SalvoApplication extends SpringBootServletInitializer {
 
             Date date = new Date();
             Game g1 = new Game(date);
-            Game g2 = new Game(Date.from(date.toInstant().plusSeconds(3600)));
-            Game g3 = new Game(Date.from(date.toInstant().plusSeconds(3600*2)));
-            Game g4 = new Game(Date.from(date.toInstant().plusSeconds(3600*3)));
             gRepo.save(g1);
-            gRepo.save(g2);
-            gRepo.save(g3);
-            gRepo.save(g4);
-
             GamePlayer gp1 = new GamePlayer(date, g1, p1);
             GamePlayer gp2 = new GamePlayer(date, g1, p2);
             gpRepo.save(gp1);
             gpRepo.save(gp2);
+            /*Game g2 = new Game(Date.from(date.toInstant().plusSeconds(3600)));
+            Game g3 = new Game(Date.from(date.toInstant().plusSeconds(3600*2)));
+            Game g4 = new Game(Date.from(date.toInstant().plusSeconds(3600*3)));
+
+            gRepo.save(g2);
+            gRepo.save(g3);
+            gRepo.save(g4);
+
+
             GamePlayer gp3 = new GamePlayer(date, g2, p1);
             GamePlayer gp4 = new GamePlayer(date, g2, p2);
             gpRepo.save(gp3);
@@ -190,7 +192,7 @@ public class SalvoApplication extends SpringBootServletInitializer {
             scRepo.save(sc7);
 
             Score sc8 = new Score(g3, p3, 0.0f, date);
-            scRepo.save(sc8);
+            scRepo.save(sc8);*/
         };
     }
 }
