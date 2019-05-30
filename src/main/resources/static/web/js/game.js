@@ -1,16 +1,14 @@
-// let player1 = "p1_";
-// let player2 = "p2_";
-let gamePlayerData = {};
-let errorMsg;
-let you = "";
-let viewer = "";
-let youID = "";
-let salvoJSON;
-let salvoPositions = [];
-let waitState = false;
-
+// var player1 = "p1_";
+// var player2 = "p2_";
+var gamePlayerData = {};
+var errorMsg;
+var you = "";
+var viewer = "";
+var youID = "";
+var salvoJSON;
+var salvoPositions = [];
+var waitState = false;
 refreshGameView(makeUrl());
-
 $('#logoutButton').on('click', function (event) {
     event.preventDefault();
     $.post("/api/logout")
@@ -27,32 +25,25 @@ $('#logoutButton').on('click', function (event) {
             console.log("logout fails");
         })
         .always(function () {
-
         });
 });
-
-
-
 function getParameterByName(name) {
-    let match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
     return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 }
-
 function makeUrl() {
-    let gamePlayerID =  getParameterByName("gp");
+    var gamePlayerID =  getParameterByName("gp");
     return '/api/game_view/' + gamePlayerID;
 }
-
 function makePostUrl() {
-    let gamePlayerID =  getParameterByName("gp");
+    var gamePlayerID =  getParameterByName("gp");
+    console.log(gamePlayerID);
     return '/api/games/players/' + gamePlayerID + '/ships';
 }
-
 function makePostUrlSalvoes() {
-    let gamePlayerID =  getParameterByName("gp");
+    var gamePlayerID =  getParameterByName("gp");
     return '/api/games/players/' + gamePlayerID + '/salvoes';
 }
-
 function refreshGameView(_url) {
     $.ajax({
         url: _url,
@@ -62,30 +53,23 @@ function refreshGameView(_url) {
             // console.log(gamePlayerData);
             // createTable(player1);
             // createTable(player2);
-
-
-
             $('#gameStateBlock')
                 .html('<span class="gameStateLabel">TURN: </span><span class="gameStateLabelBig">'
                     + getTurn(gamePlayerData)
                     + '</span><span class="gameStateLabel"> ACTION REQUIRED: </span><span class="gameStateLabelBig">'
                     + gamePlayerData.gameState + '</span>');
-
             console.log("waitState: " + waitState);
-
             if (waitState === false) {
                 showSelf(gamePlayerData);
                 makeGameRecordTable(gamePlayerData.hits.opponent, "gameRecordOppTable");
                 makeGameRecordTable(gamePlayerData.hits.self, "gameRecordSelfTable");
             }
-
             if (gamePlayerData.gameState === "PLACESHIPS"){
                 $('#placingShipsBoard').show('puff', 'slow');
             }
             if (gamePlayerData.gameState === "WAITINGFOROPP"){
                 $('#battleGrids').show('puff', 'slow');
             }
-
             if (gamePlayerData.gameState === "WON"){
                 showSelf(gamePlayerData);
                 makeGameRecordTable(gamePlayerData.hits.opponent, "gameRecordOppTable");
@@ -120,14 +104,12 @@ function refreshGameView(_url) {
                     {
                         refreshGameView(makeUrl());
                         console.log("...refreshing gameview...");
-
                     }, 5000);
             }
-            if (gamePlayerData.gameState === "PLAY"){
+            if (gamePlayerData.gameState == "PLAY"){
                 showSelf(gamePlayerData);
                 makeGameRecordTable(gamePlayerData.hits.opponent, "gameRecordOppTable");
                 makeGameRecordTable(gamePlayerData.hits.self, "gameRecordSelfTable");
-
                 $('#salvoBlock').html('<div class="drag-zone">\n' +
                     '                <div class="droppable salvoCharger caught--it" id="salvoout1"><div class="draggable" id="salvo1"></div></div>\n' +
                     '                <div class="droppable salvoCharger caught--it" id="salvoout2"><div class="draggable" id="salvo2"></div></div>\n' +
@@ -136,9 +118,7 @@ function refreshGameView(_url) {
                     '                <div class="droppable salvoCharger caught--it" id="salvoout5"><div class="draggable" id="salvo5"></div></div>\n' +
                     '                <div class="textCenter"><button class="btn btn-warning" id="postSalvo">Fire Salvo!</button></div>\n' +
                     '            </div>');
-
                 resetSalvoCellIds();
-
                 $('#postSalvo').click(function () {
                     makeSalvoJSON();
                     if (salvoPositions.length === 0){
@@ -149,12 +129,10 @@ function refreshGameView(_url) {
                         postSalvo(makePostUrlSalvoes());
                     }
                 });
-
                 $('#battleGrids').show('puff', 'slow');
                 $('#salvoBlock').show('puff', 'slow');
                 $('#gameRecordBlock').show('puff', 'slow');
             }
-
         },
         error: function(e){
             console.log(e);
@@ -165,14 +143,12 @@ function refreshGameView(_url) {
         }
     });
 }
-
 function showSelf (gamePlayerData) {
     you = "";
     viewer = "";
     youID = "";
-
     gamePlayerData.gamePlayers.forEach(function(gamePlayer) {
-        if (gamePlayer.id === getParameterByName("gp")) {
+        if (gamePlayer.id == getParameterByName("gp")) {
             you = gamePlayer.player.email;
             youID = gamePlayer.player.id;
         } else {
@@ -180,52 +156,43 @@ function showSelf (gamePlayerData) {
             $('#OpponentPlayerName').removeClass('waitingPlayer');
         }
     });
-
     if (viewer === "") {
         viewer = "Waiting for player!";
         $('#OpponentPlayerName').addClass('waitingPlayer');
     }
-
     let DateCreated = new Date(gamePlayerData.creationDate);
     DateCreated = DateCreated.getMonth() + 1 + "/" + DateCreated.getDate() + " " + DateCreated.getHours() + ":" + DateCreated.getMinutes();
     $('#gamePlayerDetails').html('<span class="labelGame">Game ID: </span><span class="labelGameBig">' + gamePlayerData.id + '</span><span class="labelGame"> Created: </span><span class="labelGameBig">' + DateCreated + '</span>');
     $('#currentPlayerName').text(you);
     $('#OpponentPlayerName').text(viewer);
-
-
     gamePlayerData.ships.forEach(function(ship) {
-
         let firstCellID;
         firstCellID = "#p1_" + ship.locations[0];
         if (ship.locations[0].substring(1) === ship.locations[1].substring(1)) {
             $(firstCellID).html('<img class="shipsImgOnSelfGridVer" src="img/' + ship.type + 'ver.png">');
-                } else {
+        } else {
             $(firstCellID).html('<img class="shipsImgOnSelfGridHor" src="img/' + ship.type + 'hor.png">');
         }
         // console.log(ship.type);
         ship.locations.forEach(function(location) {
-            let cellID = "#p1_" + location;
+            var cellID = "#p1_" + location;
             $(cellID).addClass("shipCell");
-       //     console.log(location);
+            //     console.log(location);
         });
     });
-
     gamePlayerData.salvoes.forEach(function(salvo) {
-
-       console.log("Turn: " + salvo.turn);
+        console.log("Turn: " + salvo.turn);
         salvo.locations.forEach(function(location) {
-            let cellID;
+            var cellID;
             if (salvo.player == youID){
                 cellID = "#" + location;
                 $(cellID).addClass("salvoCell");
-
                 console.log("Your salvo on " + location);
                 $(cellID).text(salvo.turn);
             } else {
                 cellID = "#p1_" + location;
                 if ($(cellID).hasClass("shipCell")) {
                     $(cellID).addClass("hitCell");
-
                     console.log("Opponent Hits Ship on " + location);
                 } else {
                     $(cellID).addClass("salvoCellSelf");
@@ -233,10 +200,8 @@ function showSelf (gamePlayerData) {
                     console.log("Opponent salvo on " + location);
                 }
             }
-
         });
     });
-
     gamePlayerData.hits.opponent.forEach(function(playTurn) {
         playTurn.hitLocations.forEach(function (hitCell) {
             cellID = "#" + hitCell;
@@ -244,50 +209,46 @@ function showSelf (gamePlayerData) {
         });
     });
 }
-
 function createTable(player) {
-    let prova = 0;
-    let l = 0;
-    let gridLabel;
-    let gridId;
-    if (player === "p1_") {
+    var prova = 0;
+    var l = 0;
+    var gridLabel;
+    var gridId;
+    if (player == "p1_") {
         gridLabel = $('<p class="gridLabel">Self grid</p>');
         gridId = "#p1Grid";
     } else {
         gridLabel = $('<p class="gridLabel">Opponent grid</p>');
         gridId = "#p2Grid";
     }
-    let mytable = $('<table></table>').attr({
+    var mytable = $('<table></table>').attr({
         id: "basicTable",
         class: ""
     });
-    let rows = 10;
-    let cols = 10;
-    let tr = [];
-
-    for (let i = 0; i <= rows; i++) {
-        let row = $('<tr></tr>').attr({
+    var rows = 10;
+    var cols = 10;
+    var tr = [];
+    for (var i = 0; i <= rows; i++) {
+        var row = $('<tr></tr>').attr({
             class: ["class1"].join(' ')
         }).appendTo(mytable);
-        if (i === 0) {
-            for (let j = 0; j < cols + 1; j++) {
+        if (i == 0) {
+            for (var j = 0; j < cols + 1; j++) {
                 $('<th></th>').text(j).attr({
                     class: ["info"]
                 }).appendTo(row);
             }
         } else {
-            for (let j = 0; j < cols; j++) {
-                if (j === 0) {
+            for (var j = 0; j < cols; j++) {
+                if (j == 0) {
                     $('<th></th>').text(String.fromCharCode(65+(l++))).attr({
                         class: ["info"]
                     }).appendTo(row);
                 }
                 $('<td></td>').attr('id', player + String.fromCharCode(65+(i-1)) + "" + (j+1)).appendTo(row);
-
             }
         }
     }
-
     gridLabel.appendTo(gridId);
     mytable.appendTo(gridId);
 }
@@ -308,9 +269,7 @@ function postShipLocations (postUrl) {
                 {
                     $('#placingShipsBoard').hide("slow");
                     refreshGameView(makeUrl());
-
                 }, 4000);
-
         })
         .fail(function (response) {
             console.log(response);
@@ -334,7 +293,6 @@ function postSalvo (postUrl) {
             $('.oppCell').removeClass('caught--it');
             $('#salvoBlock').empty();
             waitState = false;
-
             setTimeout(
                 function()
                 {
@@ -347,7 +305,6 @@ function postSalvo (postUrl) {
             $('#errorSalvo').show( "slow" ).delay(4000).hide( "slow" );
         })
 }
-
 function displayOverlay(text) {
     $("<table id='overlay'><tbody><tr><td>" + text + "<br><button class='btn btn-info' onclick='removeOverlay()'>Ok! I got it.</button> </td></tr></tbody></table>").css({
         "position": "absolute",
@@ -361,15 +318,11 @@ function displayOverlay(text) {
         "text-align": "center",
         "color": "#fff",
         "font-size": "35px"
-
     }).appendTo(".gridShips").effect( "bounce", { times: 5 }, { distance: 20 }, "slow" );
 }
-
 function removeOverlay() {
-
     $("#overlay").hide('puff', 'slow', function(){ $("#overlay").remove(); });
 }
-
 function makeSalvoJSON() {
     salvoPositions = [];
     salvoObject = {};
@@ -389,27 +342,23 @@ function makeSalvoJSON() {
         salvoPositions.push(salvo5cellID);
     }
     salvoObject = {
-        locations : salvoPositions,
-        turn : getTurn(gamePlayerData)
-    }
-
+        turn : getTurn(gamePlayerData),
+        locations: salvoPositions
+    };
     salvoJSON = JSON.stringify(salvoObject);
     console.log(salvoJSON);
 }
-
 function makeGameRecordTable (hitsArray, gameRecordTableId) {
-
-    let tableId = "#" + gameRecordTableId + " tbody";
+    var tableId = "#" + gameRecordTableId + " tbody";
     $(tableId).empty();
     let shipsAfloat = 5;
     let playerTag;
-    if (gameRecordTableId === "gameRecordOppTable") {
+    if (gameRecordTableId == "gameRecordOppTable") {
         playerTag = "#opp";
     }
-    if (gameRecordTableId === "gameRecordSelfTable") {
+    if (gameRecordTableId == "gameRecordSelfTable") {
         playerTag = "#";
     }
-
     hitsArray.forEach(function (playTurn) {
         let hitsReport = "";
         if (playTurn.damages.carrierHits > 0){
@@ -420,7 +369,6 @@ function makeGameRecordTable (hitsArray, gameRecordTableId) {
                 shipsAfloat--;
             }
         }
-
         if (playTurn.damages.battleshipHits > 0){
             hitsReport += "Battleship " + addDamagesIcons(playTurn.damages.battleshipHits, "hit") + " ";
             if (playTurn.damages.battleship === 4){
@@ -453,36 +401,30 @@ function makeGameRecordTable (hitsArray, gameRecordTableId) {
                 shipsAfloat--;
             }
         }
-
         if (playTurn.missed > 0){
             hitsReport +=  "Missed shots " + addDamagesIcons(playTurn.missed, "missed") + " ";
         }
-
         if (hitsReport === ""){
             hitsReport = "All salvoes missed! No damages!"
         }
-
         $('<tr><td class="textCenter">' + playTurn.turn + '</td><td>' + hitsReport + '</td></tr>').prependTo(tableId);
-
     });
     $('#shipsLeftSelfCount').text(shipsAfloat);
 }
-
 function addDamagesIcons (numberOfHits, hitOrMissed) {
     let damagesIcons = "";
     if (hitOrMissed === "missed") {
-        for (let i = 0; i < numberOfHits; i++) {
+        for (var i = 0; i < numberOfHits; i++) {
             damagesIcons += "<img class='hitblast' src='img/missed.png'>"
         }
     }
-        if (hitOrMissed === "hit") {
-            for (let i = 0; i < numberOfHits; i++) {
-                damagesIcons += "<img class='hitblast' src='img/redhit.png'>"
-            }
+    if (hitOrMissed === "hit") {
+        for (var i = 0; i < numberOfHits; i++) {
+            damagesIcons += "<img class='hitblast' src='img/redhit.png'>"
+        }
     }
     return damagesIcons;
 }
-
 function getTurn(gamePlayerData) {
     let turn;
     if (gamePlayerData.hits.self.length < gamePlayerData.hits.opponent.length) {
@@ -492,8 +434,3 @@ function getTurn(gamePlayerData) {
     }
     return turn;
 }
-
-
-
-
-

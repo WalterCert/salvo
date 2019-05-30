@@ -8269,7 +8269,7 @@
             if (is.docFrag(parent)) {
                 // skip past #shado-root fragments
                 while ((parent = parent.host) && is.docFrag(parent)) {
-                    continue;
+                    
                 }
 
                 return parent;

@@ -1095,7 +1095,7 @@
 
         if (prevent === true) {
             event.preventDefault();
-            return;
+            
         }
     }
 
@@ -2546,7 +2546,7 @@
             recordPointers(touches[i], event.type);
         }
 
-        return;
+        
     }
 
     function dragStart (event) {
