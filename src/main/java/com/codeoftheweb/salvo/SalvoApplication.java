@@ -48,29 +48,29 @@ public class SalvoApplication extends SpringBootServletInitializer {
 
             Player p1 = new Player("j.bauer@ctu.gov", passwordEncoder.encode("24"));
             Player p2 = new Player("c.obrian@ctu.gov",passwordEncoder.encode("42"));
-            Player p3 = new Player("kim_bauer@gmail.com",passwordEncoder.encode("kb"));
-            Player p4 = new Player("t.almeida@ctu.gov",passwordEncoder.encode("mole"));
 
             pRepo.save(p1);
             pRepo.save(p2);
-            pRepo.save(p3);
-            pRepo.save(p4);
 
             Date date = new Date();
             Game g1 = new Game(date);
             gRepo.save(g1);
-            GamePlayer gp1 = new GamePlayer(date, g1, p1);
+
+           /* GamePlayer gp1 = new GamePlayer(date, g1, p1);
             GamePlayer gp2 = new GamePlayer(date, g1, p2);
             gpRepo.save(gp1);
             gpRepo.save(gp2);
-            /*Game g2 = new Game(Date.from(date.toInstant().plusSeconds(3600)));
+            Game g2 = new Game(Date.from(date.toInstant().plusSeconds(3600)));
             Game g3 = new Game(Date.from(date.toInstant().plusSeconds(3600*2)));
             Game g4 = new Game(Date.from(date.toInstant().plusSeconds(3600*3)));
 
             gRepo.save(g2);
             gRepo.save(g3);
             gRepo.save(g4);
-
+            Player p3 = new Player("kim_bauer@gmail.com",passwordEncoder.encode("kb"));
+            Player p4 = new Player("t.almeida@ctu.gov",passwordEncoder.encode("mole"));
+            pRepo.save(p3);
+            pRepo.save(p4);
 
             GamePlayer gp3 = new GamePlayer(date, g2, p1);
             GamePlayer gp4 = new GamePlayer(date, g2, p2);

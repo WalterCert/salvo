@@ -65,7 +65,7 @@ public class SalvoController {
                 .collect(toList());
     }
 
-    //-------------------------Target: Join Game-Completo--------------------------------------------------------------|
+    //-------------------------Target: Join Game-----------------------------------------------------------------------|
     @RequestMapping(path = "/game/{Id}/players", method = RequestMethod.POST)
     private ResponseEntity<Object> newLoggedPlayerInGame(@PathVariable Long Id, Authentication authentication) {
         Player loggedPlayer = getAuthentication(authentication);
@@ -73,13 +73,15 @@ public class SalvoController {
 
         if (loggedPlayer == null)
             return new ResponseEntity<>("Error: Usuario no loggeado", HttpStatus.UNAUTHORIZED);
-        else if (existingGame == null)
+        if (existingGame == null)
             return new ResponseEntity<>("Error: El juego no existe", HttpStatus.FORBIDDEN);
-        else if (existingGame.getGamePlayers().size() >= 2)
+        if (existingGame.getGamePlayers().size() == 2)
             return new ResponseEntity<>("Error:Juego Lleno", HttpStatus.FORBIDDEN);
         else {
             GamePlayer gpAux = new GamePlayer(new Date(), existingGame, loggedPlayer);
             gamePlayerRepository.save(gpAux);
+            existingGame.addGamePlayer(gpAux);
+            gameRepository.save(existingGame);
             return new ResponseEntity<>(Map.of("gpid", gpAux.getId()), HttpStatus.CREATED);
         }
     }
@@ -155,12 +157,10 @@ public class SalvoController {
     //----------------------Target: Agregar Salvoes--------------------------------------------------------------------|
     @RequestMapping(path = "/games/players/{id}/salvoes", method = RequestMethod.POST)
     private ResponseEntity<Map<String, Object>> addSalvoes(@PathVariable long id,
-                                                         // @RequestBody String string,
                                                           @RequestBody Salvo salvo,
                                                           Authentication authentication) {
         Player loggedPlayer = getAuthentication(authentication);
         GamePlayer gamePlayer = gamePlayerRepository.findById(id);
-        //System.out.println(string.toString());
 
         if (loggedPlayer == null)
             return new ResponseEntity<>(Map.of("Error:", "No esta loggeado"), HttpStatus.UNAUTHORIZED);
@@ -210,6 +210,8 @@ public class SalvoController {
         Player authenticationPlayer = getAuthentication(authentication);
         Player playerAux = gamePlayer.getPlayer();
 
+        if (gamePlayer.getGame().getGamePlayers().size() != 2)
+            return new ResponseEntity<>(makeGameDTO(gamePlayer), HttpStatus.OK);
         if (authenticationPlayer.getId() == playerAux.getId()) {
             return new ResponseEntity<>(makeGameDTO(gamePlayer), HttpStatus.OK);
         } else
@@ -219,6 +221,7 @@ public class SalvoController {
     //------------------------------ZONA DE DTO's----------------------------------|
     private Map<String, Object> makeGameDTO(GamePlayer gamePlayer) {
         GamePlayer opp = getOpp(gamePlayer.getGame().getGamePlayers(), gamePlayer);
+        //opp.setPlayer();
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", gamePlayer.getId());
         dto.put("creationDate", gamePlayer.getDate());
@@ -465,7 +468,7 @@ public class SalvoController {
     private GamePlayer getOpp(List<GamePlayer> lgp, GamePlayer gp) {
         return lgp.stream()
                 .filter(b -> gp.getId() != b.getId())
-                .findFirst().orElse(null);
+                .findFirst().orElse(new GamePlayer());
     }
 
     //Obtiene el estado del juego
@@ -476,9 +479,6 @@ public class SalvoController {
             return "PLACESHIPS";
         if (opp.getShips().size() == 0)
             return "WAIT";
-        int turn = getCurrentTurn(self, opp);
-        if (self.getSalvoes().size() != turn)
-            return "PLAY";
 
         if (self.getSalvoes().size() == opp.getSalvoes().size()) {
             Player selfPlayer = self.getPlayer();
@@ -491,19 +491,22 @@ public class SalvoController {
                 }return "TIE";
 
             }
-            else if (totallyShipsSunk(self.getShips(), opp.getSalvoes())) {
+            if (totallyShipsSunk(self.getShips(), opp.getSalvoes())) {
                 Score score = new Score(game, selfPlayer, 0.0f, new Date());
                 if (!existScore(score, game)) {
                     scoreRepository.save(score);
                 }return "LOST";
             }
-            else if (totallyShipsSunk(opp.getShips(), self.getSalvoes())) {
+            if (totallyShipsSunk(opp.getShips(), self.getSalvoes())) {
                 Score score = new Score(game, selfPlayer, 1.0f, new Date());
                 if (!existScore(score, game)) {
                     scoreRepository.save(score);
                 }return "WON";
             }
         }
+        int turn = getCurrentTurn(self, opp);
+        if (self.getSalvoes().size() != turn)
+            return "PLAY";
 
         return "WAIT";
     }
