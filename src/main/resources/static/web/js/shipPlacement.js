@@ -145,7 +145,7 @@ function renderPositions(positions) {
 }
 
 
-
+//reposicionamiento?
 function shipPositionMsg(ship) {
 
     let shipPosition = [];
